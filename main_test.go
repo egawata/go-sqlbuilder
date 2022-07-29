@@ -19,8 +19,8 @@ func TestSelectFrom(t *testing.T) {
 	assert.Equal(t, "SELECT col1 FROM table1", b.ToSQL())
 }
 
-func TestSelectFromWhere(t *testing.T) {
+func TestSelectFromWhereRaw(t *testing.T) {
 	b := &builder.Builder{}
-	b = b.Select("col1").From("table1").Where("col2 = value2")
+	b = b.Select("col1").From("table1").WhereRaw("col2 = value2")
 	assert.Equal(t, "SELECT col1 FROM table1 WHERE col2 = value2", b.ToSQL())
 }

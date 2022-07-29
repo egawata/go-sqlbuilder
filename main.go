@@ -69,7 +69,7 @@ func (b *Builder) From(s string) *Builder {
 	return b
 }
 
-func (b *Builder) Where(s string) *Builder {
+func (b *Builder) WhereRaw(s string) *Builder {
 	b.pWheres = &PartWhereRaw{exp: s}
 	return b
 }
