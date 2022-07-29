@@ -52,7 +52,7 @@ type PartWhereRaw struct {
 }
 
 func (p *PartWhereRaw) ToSQL() string {
-	return " WHERE " + p.exp
+	return p.exp
 }
 
 func (p *PartSelect) ToSQL() string {
@@ -74,13 +74,32 @@ func (b *Builder) WhereRaw(s string) *Builder {
 	return b
 }
 
+func (b *Builder) Where(v whereClause) *Builder {
+	b.pWheres = v
+	return b
+}
+
 func (b *Builder) ToSQL() string {
 	sql := b.pSelect.ToSQL()
 	for _, f := range b.pFroms {
 		sql += " FROM " + f.Table
 	}
 	if b.pWheres != nil {
-		sql += b.pWheres.ToSQL()
+		sql += " WHERE " + b.pWheres.ToSQL()
 	}
 	return sql
+}
+
+type eq struct {
+	isWhere
+	lhv string
+	rhv string
+}
+
+func Eq(v1, v2 string) *eq {
+	return &eq{lhv: v1, rhv: v2}
+}
+
+func (v *eq) ToSQL() string {
+	return v.lhv + " = " + v.rhv
 }
