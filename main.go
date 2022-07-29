@@ -79,6 +79,14 @@ func (b *Builder) Where(v whereClause) *Builder {
 	return b
 }
 
+func (b *Builder) AddWhere(v whereClause) *Builder {
+	if b.pWheres == nil {
+		return b.Where(v)
+	}
+	b.pWheres = And(b.pWheres, v)
+	return b
+}
+
 func (b *Builder) ToSQL() string {
 	sql := b.pSelect.ToSQL()
 	for _, f := range b.pFroms {
@@ -102,4 +110,18 @@ func Eq(v1, v2 string) *eq {
 
 func (v *eq) ToSQL() string {
 	return v.lhv + " = " + v.rhv
+}
+
+type and struct {
+	isWhere
+	lhv whereClause
+	rhv whereClause
+}
+
+func And(v1, v2 whereClause) *and {
+	return &and{lhv: v1, rhv: v2}
+}
+
+func (a *and) ToSQL() string {
+	return a.lhv.ToSQL() + " AND " + a.rhv.ToSQL()
 }
